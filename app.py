@@ -5,7 +5,8 @@ from flask_mail import Mail, Message
 import smtplib
 from google.cloud import secretmanager
 from google.cloud import storage
-
+from flask import send_file
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -183,8 +184,9 @@ def login():
                 otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
 
                 # Store OTP in session for verification
+                
                 session['otp'] = otp
-                session['username'] = user_data[2]  # Store the username for later use
+                session['username'] = user_data[3]  # Store the username for later use
 
                 # Send OTP to the user's email address (you can add this logic)
                 server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -226,9 +228,122 @@ def otp_verification_login():
 
     return render_template('otp_verification_login.html', error_message=error_message)
 
+# @app.route('/dashboard')
+# def dashboard():
+#     return render_template("dashboard.html")
+
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    username = session.get('username')
+    user_bucket = get_user_bucket(username)
+    
+    if user_bucket:
+        # Fetch the list of files and their details
+        blobs = list(user_bucket.list_blobs())
+        file_list = []
+        for blob in blobs:
+            file_info = {
+                'name': blob.name,
+                'size': blob.size,
+                'created': blob.time_created.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            file_list.append(file_info)
+    else:
+        file_list = []
+
+    return render_template('dashboard.html', username=username, file_list=file_list)
+
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'username' not in session:
+        return redirect(url_for('login'))
+
+    username = session.get('username')
+    uploaded_file = request.files['file']
+
+    if uploaded_file.filename != '':
+        try:
+            # Authenticate the user and retrieve their bucket
+            user_bucket = get_user_bucket(username)
+            if user_bucket is None:
+                return "User's bucket not found. Please contact support."
+
+            # Upload the file to the user's bucket
+            blob = user_bucket.blob(uploaded_file.filename)
+            blob.upload_from_string(
+                uploaded_file.read(),
+                content_type=uploaded_file.content_type
+            )
+
+            return f'File "{uploaded_file.filename}" uploaded successfully!'
+        except Exception as e:
+            # Log the error for debugging
+            print(f'An error occurred during file upload: {str(e)}')
+            return f'An error occurred: {str(e)}'
+    else:
+        return 'No file selected.'
+    
+@app.route('/download/<filename>', methods=['GET'])
+def download_file(filename):
+    # Retrieve the user's bucket
+    username = session.get('username')
+    user_bucket = get_user_bucket(username)
+
+    if user_bucket:
+        blob = user_bucket.blob(filename)
+        if blob.exists():
+            # Read the file data into a BytesIO object
+            file_data = blob.download_as_bytes()
+            
+            # Create a BytesIO object to wrap the file data
+            file_stream = BytesIO(file_data)
+
+            # Send the file for download as an attachment
+            return send_file(file_stream, as_attachment=True, download_name=filename)
+        else:
+            flash('File not found.', 'danger')
+    else:
+        flash("User's bucket not found. Please contact support.", 'danger')
+
+    return redirect(url_for('dashboard'))
+
+@app.route('/delete/<filename>', methods=['GET'])
+def delete_file(filename):
+    # Retrieve the user's bucket
+    username = session.get('username')
+    user_bucket = get_user_bucket(username)
+
+    if user_bucket:
+        blob = user_bucket.blob(filename)
+        if blob.exists():
+            blob.delete()
+            flash(f'File "{filename}" deleted successfully!', 'success')
+        else:
+            flash('File not found.', 'danger')
+    else:
+        flash("User's bucket not found. Please contact support.", 'danger')
+
+    return redirect(url_for('dashboard'))
+
+@app.route('/logout')
+def logout():
+    # Clear the user session
+    session.pop('username', None)
+    flash('Logged out successfully!', 'success')
+    return redirect(url_for('home_page'))
+
+def get_user_bucket(username):
+    # Check if the user's bucket exists
+    storage_client = storage.Client()
+    bucket_name = f"cloud-vault-{username}"
+    user_bucket = storage_client.get_bucket(bucket_name)
+    if not user_bucket.exists():
+        return None
+    return user_bucket
 
 
 # Utility Functions
