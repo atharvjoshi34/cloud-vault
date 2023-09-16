@@ -84,3 +84,15 @@ def login():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+from google.cloud import secretmanager
+
+# Create the Secret Manager client.
+client = secretmanager.SecretManagerServiceClient()
+
+# Access the secret version.
+response = client.access_secret_version(request={"name": "projects/878639619272/secrets/emailer-password/versions/latest"})
+
+# Print the value of the secret.
+print(response.payload.data.decode("UTF-8"))

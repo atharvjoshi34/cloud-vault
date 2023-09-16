@@ -3,15 +3,25 @@ import psycopg2
 import random
 from flask_mail import Mail, Message
 import smtplib
+from google.cloud import secretmanager
+from google.cloud import storage
+
 
 app = Flask(__name__)
 
 # Configure session for OTP storage
 app.secret_key = 'your_secret_key'  # Replace with a strong secret key
+client = secretmanager.SecretManagerServiceClient()
+
+project_id = "steel-ace-399104"
+
+email_password_response = client.access_secret_version(request={"name": f"projects/{project_id}/secrets/emailer-password/versions/latest"})
+db_password_response = client.access_secret_version(request={"name": f"projects/{project_id}/secrets/db-password/versions/latest"})
+
 
 email_address = 'cloudvaultapp@gmail.com'  # Your email address
-email_password = 'dkuj jtof xpnz htpa' 
-
+email_password = email_password_response.payload.data.decode("UTF-8") 
+db_password = db_password_response.payload.data.decode("UTF-8")
 
 @app.route("/")
 def home_page():
@@ -40,7 +50,7 @@ def signup():
         conn = psycopg2.connect(
             dbname='signup',
             user='postgres',
-            password='Anuj@2000',
+            password= db_password,
             host='localhost',
             port='5432'
         )
@@ -111,7 +121,7 @@ def otp_verification():
                 conn = psycopg2.connect(
                     dbname='signup',
                     user='postgres',
-                    password='Anuj@2000',
+                    password=db_password,
                     host='localhost',
                     port='5432'
                 )
@@ -119,6 +129,11 @@ def otp_verification():
             
                 insert_query = """INSERT INTO details(first_name, last_name, user_name, passwd, email) VALUES (%s, %s, %s, %s, %s)"""
                 cur.execute(insert_query, (first_name, last_name, user_name, password, email_id))
+
+                user_bucket = create_user_bucket(user_name)
+                # Grant Storage Object Admin role to the user
+                grant_object_admin_role(user_bucket, email_id)
+
                 conn.commit()
                 cur.close()
                 conn.close()
@@ -151,7 +166,7 @@ def login():
         conn = psycopg2.connect(
             dbname='signup',
             user='postgres',
-            password='Anuj@2000',
+            password= db_password,
             host='localhost',
             port='5432'
         )
@@ -214,6 +229,23 @@ def otp_verification_login():
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
+
+
+# Utility Functions
+def create_user_bucket(username):
+    storage_client = storage.Client()
+    bucket_name = f"cloud-vault-{username}"  # Unique bucket name
+    bucket = storage_client.create_bucket(bucket_name)
+    return bucket
+
+def grant_object_admin_role(bucket, email):
+    # Grant the Storage Object Admin role to the user
+    policy = bucket.get_iam_policy(requested_policy_version=3)
+    policy.bindings.append(
+        {"role": "roles/storage.objectAdmin", "members": [f"user:{email}"]}
+    )
+    bucket.set_iam_policy(policy)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
