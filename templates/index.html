@@ -3,92 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud-vault</title>
-    <!-- Include Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Cloud Vaulte</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Add your custom CSS file here for additional styling -->
+    <style>
+        /* Add any additional inline styles here if needed */
+        body {
+            background-color: #f8f9fa; /* Background color for the entire page */
+        }
+        .navbar {
+            background-color: #343a40; /* Navbar background color */
+        }
+        .navbar-dark .navbar-brand {
+            color: #ffffff; /* Navbar brand text color */
+        }
+        .navbar-dark .navbar-toggler-icon {
+            background-color: #ffffff; /* Navbar toggler icon color */
+        }
+        .navbar-dark .navbar-nav .nav-link {
+            color: #ffffff; /* Navbar link text color */
+        }
+        .navbar-dark .navbar-nav .nav-link:hover {
+            color: #f8f9fa; /* Navbar link text color on hover */
+        }
+        .hero {
+            background-image: url('your-background-image.jpg'); /* Hero section background image */
+            background-size: cover;
+            color: #ffffff; /* Hero text color */
+            text-align: center;
+            padding: 100px 0;
+        }
+        .hero h1 {
+            font-size: 36px; /* Hero heading font size */
+            margin-bottom: 20px;
+            color: #343a40; /* Darken the hero heading */
+        }
+        .hero p {
+            font-size: 18px; /* Hero paragraph font size */
+            color: #343a40; /* Darken the hero paragraph */
+        }
+        .button {
+            background-color: #007bff; /* Button background color */
+            color: #ffffff; /* Button text color */
+            padding: 10px 20px;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #0056b3; /* Button background color on hover */
+        }
+        .features {
+            background-color: #f8f9fa; /* Features section background color */
+            padding: 50px 0;
+        }
+        .feature-box {
+            text-align: center;
+            margin-bottom: 30px;
+            border: 2px solid #343a40; /* Add a border around feature boxes */
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .feature h3 {
+            font-size: 28px; /* Feature heading font size */
+            color: #343a40; /* Darken the feature headings */
+            margin-bottom: 10px; /* Add space between headings and paragraphs */
+        }
+        .feature p {
+            font-size: 16px; /* Feature paragraph font size */
+            color: #6c757d; /* Color for feature descriptions */
+        }
+    </style>
 </head>
 <body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <img src="static/logo.jpeg" alt="Your Logo" width="30" height="30" class="d-inline-block align-text-top">
+                    Cloud Vault
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="signup">Sign Up</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="login">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-<!-- Header Section -->
-<header class="bg-dark">
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <section class="hero">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                <img src="static/logo.jpeg" alt="Logo" width="55" height="50" class="d-inline-block align-text-center"><b>  Cloud Vault</b>
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="techstack">Tech Stack</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="signup">Sign Up</a>
-                      </li>
-                      <li class="nav-item">
-                        <a class="nav-link" href="login">Login</a>
-                      </li>
-                </ul>
-            </div>
+            <br>
+            <h1>Welcome to Your Cloud File Hosting Service</h1>
+            <p class="mb-4">Securely store your files in the cloud.</p>
+          
         </div>
-    </nav>
-</header>
+    </section>
 
-<!-- Hero Section -->
-<section class="hero bg-primary text-white text-center py-5">
-    <div class="container">
-        <h1 class="mt-4">Seamless Cloud File Hosting</h1>
-        <a href="tech-stack" class="btn btn-light btn-lg mt-3">See how Cloud Vault works!</a>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="features text-center py-5">
-    <div class="container">
-        <div class="row">
-            <!-- Feature 1 -->
-            <div class="col-md-4">
-                <div class="feature">
-                    <img src="feature-icon-1.png" alt="Feature 1" class="img-fluid">
-                    <h2>Feature 1</h2>
-                    <p>Description of Feature 1.</p>
+    <section class="features">
+        <div class="container">
+            <h2 class="text-center text-dark mb-4">Features</h2>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="feature-box">
+                        <h3>Easy File Uploads</h3>
+                        <p>Upload your files to cloud with a simple interface.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="feature-box">
+                        <h3>Secure Storage</h3>
+                        <p>Your files are encrypted and stored securely in the cloud.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="feature-box">
+                        <h3>Storage for everyone</h3>
+                        <p>Storage any file you want.</p>
+                    </div>
                 </div>
             </div>
-            <!-- Feature 2 -->
-            <div class="col-md-4">
-                <div class="feature">
-                    <img src="feature-icon-2.png" alt="Feature 2" class="img-fluid">
-                    <h2>Feature 2</h2>
-                    <p>Description of Feature 2.</p>
-                </div>
-            </div>
-            <!-- Add more features as needed -->
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- How It Works Section -->
-<section class="how-it-works py-5">
-    <div class="container">
-        <div class="row">
-            <!-- Step 1 -->
-            <div class="col-md-4">
-                <div class="step text-center">
-                    <img src="step-1.png" alt="Step 1" class="img-fluid">
-                    <h3>Step 1</h3>
-                    <p>Describe Step 1.</p>
-                </div>
-            </div>
-            <!-- Add more steps as needed -->
-        </div>
-    </div>
-</section>
+    <!-- Rest of your content goes here -->
 
-<!-- Include Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <footer class="text-center py-4">
+        <p>&copy; 2023 Your Cloud File Hosting Service</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
