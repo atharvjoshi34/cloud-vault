@@ -279,7 +279,7 @@ def upload_file():
                 content_type=uploaded_file.content_type
             )
 
-            return f'File "{uploaded_file.filename}" uploaded successfully!'
+            return redirect(url_for('dashboard'))
         except Exception as e:
             # Log the error for debugging
             print(f'An error occurred during file upload: {str(e)}')
