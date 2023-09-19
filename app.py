@@ -363,4 +363,4 @@ def grant_object_admin_role(bucket, email):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
