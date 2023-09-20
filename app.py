@@ -16,13 +16,20 @@ client = secretmanager.SecretManagerServiceClient()
 
 project_id = "steel-ace-399104"
 
+#accessing the secret payload from secret manager
 email_password_response = client.access_secret_version(request={"name": f"projects/{project_id}/secrets/emailer-password/versions/latest"})
 db_password_response = client.access_secret_version(request={"name": f"projects/{project_id}/secrets/db-password/versions/latest"})
+email_address_response= client.access_secret_version(request={"name": f"projects/{project_id}/secrets/emailer-address/versions/latest"})
+db_user_response = client.access_secret_version(request={"name": f"projects/{project_id}/secrets/db-user-name/versions/latest"})
+db_ip_response = client.access_secret_version(request={"name": f"projects/{project_id}/secrets/db-instance-ip/versions/latest"})
 
-
-email_address = 'cloudvaultapp@gmail.com'  # Your email address
+#decoding the payload of access manager
+email_address = email_address_response.payload.data.decode("UTF-8") 
 email_password = email_password_response.payload.data.decode("UTF-8") 
 db_password = db_password_response.payload.data.decode("UTF-8")
+db_user = db_user_response.payload.data.decode("UTF-8")
+db_ip = db_ip_response.payload.data.decode("UTF-8")
+
 
 @app.route("/")
 def home_page():
@@ -41,18 +48,19 @@ def signup():
         first_name = request.form.get('fname')
         last_name = request.form.get('lname')
 
+        # using the session functionality which can help you store stuff and user in other routes
         session['first_name'] = first_name
         session['last_name'] =  last_name
         session['user_name'] =  user_name
         session['email_id'] =  email_id
         session['password'] = password
 
-        # Check if the username already exists
+        # making the database connection -> to secure it gcp secret manager is used
         conn = psycopg2.connect(
             dbname='signup',
-            user='postgres',
+            user= db_user,
             password= db_password,
-            host='localhost',
+            host= db_ip,
             port='5432'
         )
         cur = conn.cursor()
@@ -88,10 +96,10 @@ def signup():
                 # Send OTP to the user's email address (you can add this logic)
                 server = smtplib.SMTP('smtp.gmail.com', 587)
                 server.starttls()
-                server.login(email_address, email_password)
+                server.login(email_address, email_password) #to keep the email address password cofidential again secret manager is used
                 subject = 'SignUp for Cloud Vault'
                 message = f'Your SignUp code for Cloud Vault is: {otp}'
-                server.sendmail(email_address, email_id, f'Subject: {subject}\n\n{message}')
+                server.sendmail(email_address, email_id, f'Subject: {subject}\n\n{message}') 
                 server.quit()
 
                 # Redirect to the OTP verification page
@@ -120,11 +128,11 @@ def otp_verification():
                 password = session.get('password')
 
                 conn = psycopg2.connect(
-                    dbname='signup',
-                    user='postgres',
-                    password=db_password,
-                    host='localhost',
-                    port='5432'
+                     dbname='signup',
+                     user= db_user,
+                     password= db_password,
+                     host=db_ip,
+                     port='5432'
                 )
                 cur = conn.cursor()
             
@@ -148,7 +156,7 @@ def otp_verification():
                 session.pop('password', None)
 
                 flash('Signup successful! You can now log in.', 'success')
-                return redirect(url_for('login'))
+                return redirect(url_for('login')) #redirect url takes you the functon mentioned
             except Exception as e:
                 flash(f"An error occurred while signing up: {str(e)}", 'danger')
         else:
@@ -166,9 +174,9 @@ def login():
 
         conn = psycopg2.connect(
             dbname='signup',
-            user='postgres',
+            user=db_user,
             password= db_password,
-            host='localhost',
+            host= db_ip,
             port='5432'
         )
         cur = conn.cursor()
@@ -228,9 +236,7 @@ def otp_verification_login():
 
     return render_template('otp_verification_login.html', error_message=error_message)
 
-# @app.route('/dashboard')
-# def dashboard():
-#     return render_template("dashboard.html")
+
 
 @app.route('/dashboard')
 def dashboard():
