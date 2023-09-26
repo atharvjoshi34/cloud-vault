@@ -20,4 +20,7 @@ Cloud Vault is a web application built with Flask and deployed on Google Cloud P
 
 <b>4. Challenges faced and tips</b>
 
--
+- To send OTP using your gmail you need to enable two step verfiication for your account then generate the ***APP PASSWORD*** which then you can use to send email. Make sure to use this password carefully
+- To create databases, tables in your cloud sql instance you will use tool name PGadmin while making the connection for the first time you might encounter the error ***Request time out*** again and again to solve this go to site [https://whatismyipaddress.com/](https://whatismyipaddress.com/) note your IPv4 address and then go to <b>cloud sql instance edit section -> Connection under connection you will see authorized network add your ip address here </b> by doing this you wont face the timeout issue in pgadmin
+- When you will deploy your application on cloud run you might face the issue where your database is not responsding or giving the internal server error thats because cloud sql will block the traffic by default you need to follow the same step as we did above. To test on large audience you can add the ip address 0.0.0.0/0 in the authorized network of cloud sql. <b> Note:- This is not a recommeded practice to allow traffice from all internet to your instance. In production only allow a specific range of ip address from where your traffic would be coming.</b>
+- 
