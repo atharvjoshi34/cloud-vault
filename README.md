@@ -14,7 +14,7 @@ Cloud Vault is a web application built with Flask and deployed on Google Cloud P
 
 - While using cloud always follow the least privilege principles for service accounts you are using.
 - Never use JSON Key file while you are deploying your application on cloud. Rather use IAM based authentication which are far secure than using a JSON key
-- Never hardcode a any secret vaule directly in your application. Industry practice either insert your secret using environemnt variable through your ci/cd pipeline or use some kind of secret manager (used in our case).
+- Never hardcode any secret vaule directly in your application. Industry practice either insert your secret using environemnt variable through your ci/cd pipeline or use some kind of secret manager (used in our case).
 - In cloud vault We are using DB username and password to connect to the database. To safe gaurd the DB username and password cloud vault is using GCP service called <b>Secret Manager</b>.
 - You can also use SSL certificate to secure your database and use IAM based authentication.
 
