@@ -30,7 +30,7 @@ Cloud Vault is a web application built with Flask and deployed on Google Cloud P
     <li>Then do cd to your project location and run command <b> docker build -t image_name:tag .</b></li>
     <li>Dont forget to add the <b> .</b> as its telling you the location of your docker file</li>
     <li> Then run the command <b>docker images</b> it will list all the docker images in your system. You will see the column image id copy the id of the image you want to upload to the artifact registry</li>
-    <li>Now run the command <b>docker tag SOURCE-IMAGE LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY/IMAGE:TAG</b> you can get this path from the artifact registry as well in the console, this image name can same oe either different as your local image</li>
+    <li>Now run the command <b>docker tag SOURCE-IMAGE:tag    LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY/IMAGE:TAG</b> you can get this path from the artifact registry as well in the console, this image name can same or either different as your local image. we do this step to let docker know where we need to push the imae from where to where</li>
     <li>For the final step you need to run the command <b>docker push LOCATION-docker.pkg.dev/PROJECT-ID/REPOSITORY/IMAGE:TAG</b> this command will push your local image to the artifact registry of the gcp</li>
     </ol>
     
